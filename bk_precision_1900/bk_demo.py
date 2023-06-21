@@ -14,11 +14,11 @@ def main():
 
     with BK1902B(args.port) as psu:
         print("Resetting output")
-        psu.set_output_off()
+        psu.disable_output()
         psu.set_current(0.1)
         psu.set_voltage(1)
         time.sleep(10)
-        psu.set_output_on()
+        psu.enable_output()
         for voltage in range(1, 40, 5):
             psu.set_voltage(voltage)
             time.sleep(2)
@@ -28,7 +28,7 @@ def main():
                 f"Voltage set to {voltage}V."
                 + f"Measured: {output[0]}V @ {output[1]}A {mode}"
             )
-        psu.set_output_off()
+        psu.disable_output()
 
 
 if __name__ == "__main__":
