@@ -3,6 +3,7 @@ import sys
 import PySimpleGUI as sg
 import argparse
 import time
+import threading
 from bk1902b import BK1902B
 
 """
@@ -25,6 +26,16 @@ layout = [[sg.Text('Demo of Button Callbacks')],
 
 window = sg.Window('Button Callback Simulation', layout)
 
+# output = None
+
+
+def live_feed(output):
+    while True:
+        time.sleep(1)
+        print(
+            f"Voltage set to 1V."
+            + f"Measured: {output[0]}V @ {output[1]}A"
+        )
 
 def main():
     # Parse the command line arguments
@@ -36,12 +47,15 @@ def main():
 
     with BK1902B(args.port) as psu:
         while True:  # Event Loop
+            power_status = False
             event, values = window.read()
             output = psu.get_display()
             print(
                 f"Voltage set to 1V."
                 + f"Measured: {output[0]}V @ {output[1]}A"
             )
+            while not True:
+
             if event == sg.WIN_CLOSED:
                 break
             elif event == 'Voltage 1':
@@ -50,21 +64,14 @@ def main():
                 psu.set_voltage(20)
             elif event == 'Output Off':
                 psu.disable_output()
-                output = psu.get_display()
+                power_status = True
             elif event == 'Output On':
                 psu.enable_output()
-                output = psu.get_display()
-            elif event == "-THREAD-":
-                # data1, data2 = values[event]
-                # window['-DATA1-'].update(str(data1))
-                # window['-DATA2-'].update(str(data2))
-                print(
-                    f"Voltage set to 1V."
-                    + f"Measured: {output[0]}V @ {output[1]}A"
-                )
+                power_status = False
         psu.disable_output()
         window.close()
 
 
 if __name__ == "__main__":
+    # threading.Thread(target=live_feed, daemon=True, args=output).start()
     main()
