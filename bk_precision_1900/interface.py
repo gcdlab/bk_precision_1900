@@ -20,22 +20,24 @@ to your Event Loop
 
 layout = [[sg.Text('Demo of Button Callbacks')],
           [sg.Multiline(size=(60, 15), font='Courier 8', expand_x=True, expand_y=True, write_only=True,
-           reroute_stdout=True, reroute_stderr=True, echo_stdout_stderr=True, autoscroll=True,
-           auto_refresh=True)],
+                        reroute_stdout=True, reroute_stderr=True, echo_stdout_stderr=True, autoscroll=True,
+                        auto_refresh=True)],
           [sg.Button('Voltage 1'), sg.Button('Voltage 20'), sg.Button('Output On'), sg.Button('Output Off')]]
 
 window = sg.Window('Button Callback Simulation', layout)
 
+
 # output = None
 
 
-def live_feed(output):
+def live_feed(voltage, current):
     while True:
         time.sleep(1)
         print(
             f"Voltage set to 1V."
-            + f"Measured: {output[0]}V @ {output[1]}A"
+            + f"Measured: {voltage}V @ {current}A"
         )
+
 
 def main():
     # Parse the command line arguments
@@ -54,8 +56,6 @@ def main():
                 f"Voltage set to 1V."
                 + f"Measured: {output[0]}V @ {output[1]}A"
             )
-            while not True:
-
             if event == sg.WIN_CLOSED:
                 break
             elif event == 'Voltage 1':
